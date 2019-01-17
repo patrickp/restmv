@@ -17,7 +17,9 @@ CALL WGETPARAM(ACTION,1)
 ACTION=OCONV(ACTION,"MCU")
 
 * We should allow this also via the resgt payload
-IF ACTION="" THEN ACTION="READ"
+IF ACTION="" THEN
+    ACTION="READ"
+END
 
 BEGIN CASE
     CASE ACTION="READ"
@@ -26,6 +28,8 @@ BEGIN CASE
     CASE ACTION="EXECUTE"
         CALL RESTMV.EXECUTE.RTNE
     CASE ACTION="CALL"
+    CASE ACTION='DB'
+        CALL RESTMV.DB.RTNE
     CASE 1
         REST.STATUS="Error"
         REST.STATUS.MSG="Invalid Action"

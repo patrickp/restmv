@@ -1,0 +1,68 @@
+SUBROUTINE RESTMV.MVTOJSON.RTNE(ID,REC,JSON,OPTIONS)
+
+JSONTYPE=OPTIONS<1>
+IF JSONTYPE="" THEN JSONTYPE="json"
+
+CALL WOBJ(OBJ,"FROMSTRING","",\{ "id": "", \:JSONTYPE:\: [ {} ], "data": {} }\,"",RERR)
+GOSUB debug.rec
+
+NUM.ATTS=DCOUNT(REC,@AM)
+CALL WOBJ(OBJ,"SET",JSONTYPE:"[0].id",ID,"",RERR)
+CALL WOBJ(OBJ,"SET",JSONTYPE:"[0].file","NW.ORDERS","",RERR)
+FOR A = 1 TO NUM.ATTS
+
+	THIS.A = REC<A>
+	NUM.VALS=DCOUNT(THIS.A,@VM)
+	A.P=JSONTYPE:"[":A:"]"
+	*IF A=3 THEN DEBUG
+	IF (NUM.VALS<2 OR JSONTYPE="jsonsimple") AND JSONTYPE # "JSON3D" THEN
+		CALL WOBJ(OBJ,"SET",A.P,THIS.A,"",RERR); GOSUB debug.rec
+	END ELSE
+	    *CALL WOBJ(OBJ,"SET",A.P,A,"",RERR); GOSUB debug.rec
+*		PRINT "PUTTING ARRAY AT ":A.P
+	    CALL WOBJ(OBJ,"SET.ARRAY",A.P,"[ {}]","",RERR); GOSUB debug.rec
+        * THIS USED TO NOT REQUIRE A VALUE
+        * CALL WOBJ(OBJ,"SET.ARRAY",A.P,"","",RERR); * ADDING OBJECTS AND ARRAYS CAN BE BLANK
+        PRINT "DOING A -1 AT ":A.P:" TO STORE ":A
+        CALL WOBJ(OBJ,"SET.NUMBER",A.P:"[0].attribute",A,"",RERR); GOSUB debug.rec
+		FOR V=1 TO NUM.VALS
+
+			THIS.V=THIS.A<1,V>
+			NUM.SUBS=DCOUNT(THIS.V,@SVM)
+			V.P=A.P:"[":V:"]"
+
+			IF NUM.SUBS=1 AND JSONTYPE # "JSON3D" THEN
+			    PRINT "SETTING ":V.P:" = ":THIS.V
+				CALL WOBJ(OBJ,"SET",V.P,THIS.V,"",RERR); GOSUB debug.rec
+			END ELSE
+				PRINT "SETTING.ARRAY AT ":V.P
+			    CALL WOBJ(OBJ,"SET.ARRAY",V.P,"[{}]","",RERR); GOSUB debug.rec
+                CALL WOBJ(OBJ,"SET.NUMBER",V.P:"[0].attribute",A,"",RERR)
+				CALL WOBJ(OBJ,"SET.NUMBER",V.P:"[0].value",V,"",RERR)
+				FOR S=1 TO NUM.SUBS
+					THIS.S=THIS.V<1,1,S>
+					S.P=V.P:"[":S:"]"
+					PRINT "SETTING ":S.P:" = ":THIS.S 
+					CALL WOBJ(OBJ,"SET",S.P,THIS.S,"",RERR);
+					 GOSUB debug.rec
+				NEXT S
+			END
+		NEXT V
+	END
+
+NEXT A
+
+DEBUG
+
+end.of.program: *
+
+CALL WOBJ(OBJ,"TOSTRING","",JSON,"PRETTIFY",RERR)
+RETURN
+
+STOP
+
+debug.rec: *
+
+RETURN
+
+

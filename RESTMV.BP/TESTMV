@@ -1,0 +1,8 @@
+* TEST #2
+
+GOSUB myfunction
+STOP
+
+MYFUNCTION: *
+
+RETURN
