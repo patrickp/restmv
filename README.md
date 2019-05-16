@@ -89,6 +89,13 @@ Other pick functions we could include in the library for local processing
  * oconv (numeric, date, time)
  * iconv (numeric, date, time)
 
+Languages Needed
+
+  * java (we have multiple versions available)
+  * c# (we have multiple versions available)
+  * javascript (MVExtensions has a version for node that should work)
+  * Python (needs to be made)
+  
 ### READ
 
 ../RESTMV/READ/FILE/ITEM
