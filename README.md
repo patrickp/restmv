@@ -70,6 +70,25 @@ In json
 
 ```
 
+### Alternative Record Format - Pick Multi Value
+
+Rest has no set rules on what the actual body data is. In addition, jSON can store pick @am, @vm and @svm just fine within a jSON payload.  An alternative is to build out a generic pick class for different platforms that would give you functions to deal with a Pick Dynamic record.  This module would have to be ported to any language that wishes to use the pick Dynamic functions.  The needed functions would need to be
+
+ * consume pick record
+ * export pick record
+ * extract data
+ * insert data
+ * delete data
+ * count @am, @vm, @svm
+ * locate
+ * optional - tojson
+ * optional - fromjson
+ 
+Other pick functions we could include in the library for local processing
+
+ * oconv (numeric, date, time)
+ * iconv (numeric, date, time)
+
 ### READ
 
 ../RESTMV/READ/FILE/ITEM
